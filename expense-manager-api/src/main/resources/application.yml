@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:~/h2/testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hiberante.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2.client.registration:
+      google:
+        clientId: 120993835113-vg96kg9og7er1hctd0inq8kqpa4iv665.apps.googleusercontent.com
+        clientSecret: v1KCooHo6HI7BJHGUPGNzFcN
+        redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+        scope:
+          - email
+          - profile
+      facebook:
+        clientId: 1490738631022711
+        clientSecret: e20cd2a3ec9fd3f1470d57b0e2ae1f77
+        redirectUri : "{baseUrl}/oauth2/callback/{registrationId}"
+        scope:
+          - email
+          - public_profile
+    provider.facebook:
+      authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+      tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+      userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+app:
+  auth:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect

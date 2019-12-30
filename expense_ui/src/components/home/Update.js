@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import {ACCESS_TOKEN} from '../../constants';
 
 class Update extends React.Component{
     constructor(){
@@ -95,7 +96,9 @@ class Update extends React.Component{
             year: e.state.year
         }
 
-        Axios.post('http://localhost:8080/expense',expense).then(function(response){
+        Axios.post('http://localhost:8080/expense',expense,{headers:{
+          'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+        }}).then(function(response){
             e.setState({
                 messageFromServer: response.data
             });
@@ -108,7 +111,7 @@ class Update extends React.Component{
                 <div>
                   <Button bsStyle="warning" bsSize="small" onClick={this.openModal}><span className="glyphicon glyphicon-edit"></span></Button>
                 <Modal isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal} contentLabel="Add Expense" className="Modal">
-                  <Link to={{pathname: '/', search: '?month='+this.state.month+'&year='+this.state.year }} style={{ textDecoration: 'none' }}>
+                  <Link to={{pathname: '/home', search: '?month='+this.state.month+'&year='+this.state.year }} style={{ textDecoration: 'none' }}>
                     <Button bsStyle="danger" bsSize="mini" onClick={this.closeModal}><span className="closebtn glyphicon glyphicon-remove"></span></Button>
                   </Link>
                   <br/>
@@ -155,7 +158,7 @@ class Update extends React.Component{
                  <Modal isOpen={this.state.modalIsOpen} onAfterOpen={this.afterOpenModal} onRequestClose={this.closeModal} contentLabel="Add Expense" className="Modal">
                  <div className='button-center'>
                       <h3>{this.state.messageFromServer}</h3>
-                      <Link to={{pathname: '/', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
+                      <Link to={{pathname: '/home', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
                         <Button bsStyle="success" bsSize="mini" onClick={this.closeModal}>Close the Dialog</Button>
                       </Link>
                  </div>

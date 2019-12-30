@@ -4,6 +4,7 @@ import Axios from 'axios';
 import {Button} from 'react-bootstrap';
 import Modal from 'react-modal';
 import {Link} from 'react-router-dom';
+import {ACCESS_TOKEN} from '../../constants';
 
 class Add extends React.Component{
 
@@ -79,7 +80,9 @@ class Add extends React.Component{
       year: e.state.year
     }
     console.log("Expense: "+expense);
-    Axios.post('http://localhost:8080/expense',expense).then(function(response) {
+    Axios.post('http://localhost:8080/expense',expense,{headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+    }}).then(function(response) {
       e.setState({
         messageFromServer: response.data
       });
@@ -105,7 +108,7 @@ class Add extends React.Component{
         <div>
           <Button bsStyle="success" bsSize="small" onClick={this.openModal}><span className="glyphicon glyphicon-plus"></span></Button>
           <Modal isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal} contentLabel="Add Expense" className="Modal">
-             <Link to={{pathname: '/', search: '' }} style={{ textDecoration: 'none' }}>
+             <Link to={{pathname: '/home', search: '' }} style={{ textDecoration: 'none' }}>
               <Button bsStyle="danger" bsSize="mini" onClick={this.closeModal}>
                 <span className="closebtn glyphicon glyphicon-remove"></span>
               </Button>
@@ -153,7 +156,7 @@ class Add extends React.Component{
           <Modal isOpen={this.state.modalIsOpen} onAfterOpen={this.afterOpenModal} onRequestClose={this.closeModal} contentLabel="Add Expense" className="Modal">
           <div className='button-center'>
            <h3>{this.state.messageFromServer}</h3>
-           <Link to={{pathname: '/', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
+           <Link to={{pathname: '/home', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
             <Button bsStyle="success" bsSize="mini" onClick={this.closeModal}>Close the Dialog</Button>
            </Link>
           </div>

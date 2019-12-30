@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import {ACCESS_TOKEN} from '../../constants'
 
 class Delete extends React.Component{
     constructor(){
@@ -36,16 +37,15 @@ class Delete extends React.Component{
     }
 
     delete(e){
-       axios.delete('http://localhost:8080/expense',{
-           params: { id: e.state.id }
-         })
-         .then(function(response) {});
+       axios.delete('http://localhost:8080/expense?id='+e.state.id,{headers:{
+             'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+       }}).then(function(response) {});
     }
 
     render(){
         return(
             <Button bsStyle="danger" bsSize="small" onClick={this.onClick}>
-              <Link to={{pathname: '/', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
+              <Link to={{pathname: '/home', search: '?month='+this.state.month+'&year='+this.state.year}} style={{ textDecoration: 'none' }}>
                   <span className="glyphicon glyphicon-remove"></span>
               </Link>
             </Button>

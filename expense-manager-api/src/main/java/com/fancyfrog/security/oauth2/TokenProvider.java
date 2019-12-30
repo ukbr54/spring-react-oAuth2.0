@@ -1,4 +1,4 @@
-package com.fancyfrog.security;
+package com.fancyfrog.security.oauth2;
 
 import com.fancyfrog.config.props.AppProperties;
 import io.jsonwebtoken.*;

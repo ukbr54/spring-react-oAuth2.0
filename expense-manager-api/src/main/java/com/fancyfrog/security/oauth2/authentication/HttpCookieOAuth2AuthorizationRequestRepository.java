@@ -1,4 +1,4 @@
-package com.fancyfrog.security.oauth2;
+package com.fancyfrog.security.oauth2.authentication;
 
 import com.fancyfrog.utility.CookieUtils;
 import com.nimbusds.oauth2.sdk.util.StringUtils;

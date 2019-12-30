@@ -1,10 +1,10 @@
-package com.fancyfrog.security.oauth2;
+package com.fancyfrog.security.oauth2.authentication;
 
 import com.fancyfrog.exception.OAuth2AuthenticationProcessingException;
 import com.fancyfrog.persistence.AuthProvider;
 import com.fancyfrog.persistence.model.User;
 import com.fancyfrog.persistence.repositories.UserRepository;
-import com.fancyfrog.security.UserPrincipal;
+import com.fancyfrog.security.oauth2.UserPrincipal;
 import com.fancyfrog.security.oauth2.user.OAuth2UserInfo;
 import com.fancyfrog.security.oauth2.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;

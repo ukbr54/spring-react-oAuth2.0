@@ -8,7 +8,7 @@ import com.fancyfrog.payload.SignUpRequest;
 import com.fancyfrog.persistence.AuthProvider;
 import com.fancyfrog.persistence.model.User;
 import com.fancyfrog.persistence.repositories.UserRepository;
-import com.fancyfrog.security.TokenProvider;
+import com.fancyfrog.security.oauth2.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

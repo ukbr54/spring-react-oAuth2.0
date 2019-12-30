@@ -1,4 +1,4 @@
-package com.fancyfrog.security;
+package com.fancyfrog.security.oauth2;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

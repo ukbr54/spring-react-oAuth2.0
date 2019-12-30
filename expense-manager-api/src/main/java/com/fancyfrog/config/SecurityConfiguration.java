@@ -1,12 +1,12 @@
 package com.fancyfrog.config;
 
-import com.fancyfrog.security.CustomUserDetailsService;
-import com.fancyfrog.security.RestAuthenticationEntryPoint;
-import com.fancyfrog.security.TokenAuthenticationFilter;
-import com.fancyfrog.security.oauth2.CustomOAuth2UserService;
-import com.fancyfrog.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.fancyfrog.security.oauth2.OAuth2AuthenticationFailureHandler;
-import com.fancyfrog.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.fancyfrog.security.oauth2.authentication.CustomUserDetailsService;
+import com.fancyfrog.security.oauth2.RestAuthenticationEntryPoint;
+import com.fancyfrog.security.oauth2.TokenAuthenticationFilter;
+import com.fancyfrog.security.oauth2.authentication.CustomOAuth2UserService;
+import com.fancyfrog.security.oauth2.authentication.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.fancyfrog.security.oauth2.authentication.OAuth2AuthenticationFailureHandler;
+import com.fancyfrog.security.oauth2.authentication.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

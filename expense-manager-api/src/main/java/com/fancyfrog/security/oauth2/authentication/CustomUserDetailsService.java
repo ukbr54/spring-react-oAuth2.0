@@ -1,8 +1,9 @@
-package com.fancyfrog.security;
+package com.fancyfrog.security.oauth2.authentication;
 
 import com.fancyfrog.exception.ResourceNotFoundException;
 import com.fancyfrog.persistence.model.User;
 import com.fancyfrog.persistence.repositories.UserRepository;
+import com.fancyfrog.security.oauth2.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

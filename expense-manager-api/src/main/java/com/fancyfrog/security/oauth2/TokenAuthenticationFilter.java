@@ -1,5 +1,6 @@
-package com.fancyfrog.security;
+package com.fancyfrog.security.oauth2;
 
+import com.fancyfrog.security.oauth2.authentication.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

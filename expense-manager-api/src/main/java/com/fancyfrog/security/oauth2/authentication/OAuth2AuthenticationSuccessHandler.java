@@ -1,8 +1,8 @@
-package com.fancyfrog.security.oauth2;
+package com.fancyfrog.security.oauth2.authentication;
 
 import com.fancyfrog.config.props.AppProperties;
 import com.fancyfrog.exception.BadRequestException;
-import com.fancyfrog.security.TokenProvider;
+import com.fancyfrog.security.oauth2.TokenProvider;
 import com.fancyfrog.utility.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

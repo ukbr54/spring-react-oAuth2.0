@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,6 +42,19 @@ public class User {
     private AuthProvider provider;
 
     private String providerId;
+
+    public User() { }
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_ID",referencedColumnName = "ID")
+    private List<UserRole> roles;
+
+    public User(String name, @Email String email, String password, @NotNull AuthProvider provider) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.provider = provider;
+    }
 
     @Override
     public boolean equals(Object o) {

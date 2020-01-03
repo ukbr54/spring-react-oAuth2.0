@@ -1,6 +1,10 @@
 package com.fancyfrog.config;
 
 import com.fancyfrog.security.authentication.common.RestAuthenticationEntryPoint;
+import com.fancyfrog.security.authentication.common.token.extractor.TokenExtractor;
+import com.fancyfrog.security.authentication.jwt.JwtAuthenticationProvider;
+import com.fancyfrog.security.authentication.jwt.JwtTokenAuthenticationProcessingFilter;
+import com.fancyfrog.security.authentication.jwt.SkipPathRequestMatcher;
 import com.fancyfrog.security.authentication.usernamePassword.UsernamePasswordAuthenticationProvider;
 import com.fancyfrog.security.authentication.usernamePassword.UsernamePasswordProcessingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,10 +50,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private @Autowired CorsFilter corsFilter;
     private @Autowired ObjectMapper objectMapper;
+    private @Autowired TokenExtractor tokenExtractor;
     private @Autowired AuthenticationSuccessHandler successHandler;
     private @Autowired AuthenticationFailureHandler failureHandler;
     private @Autowired AuthenticationManager authenticationManager;
     private @Autowired RestAuthenticationEntryPoint authenticationEntryPoint;
+    private @Autowired JwtAuthenticationProvider jwtAuthenticationProvider;
     private @Autowired UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
 
     protected UsernamePasswordProcessingFilter buildUsernamePasswordProcessingFilter(String loginEntryPoint) throws Exception{
@@ -57,6 +63,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 new UsernamePasswordProcessingFilter(loginEntryPoint,successHandler,failureHandler,objectMapper);
         processingFilter.setAuthenticationManager(this.authenticationManager);
         return  processingFilter;
+    }
+
+    protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter(List<String> pathsToSkip, String pattern)
+            throws Exception{
+        SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip,pattern);
+        JwtTokenAuthenticationProcessingFilter filter =
+                new JwtTokenAuthenticationProcessingFilter(failureHandler, tokenExtractor, matcher);
+        filter.setAuthenticationManager(this.authenticationManager);
+        return filter;
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -68,6 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(usernamePasswordAuthenticationProvider);
+        auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
     @Override
@@ -92,10 +108,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
              .authorizeRequests()
              .antMatchers(API_ROOT_URL).authenticated()
           .and()
-             .addFilterBefore(buildUsernamePasswordProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class);
+             .addFilterBefore(buildUsernamePasswordProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class)
+             .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(PUBLIC_API_URLS,API_ROOT_URL),UsernamePasswordAuthenticationFilter.class);
     }
 
     private List<String> PUBLIC_API_URLS = Arrays.asList(
-            AUTHENTICATION_URL, "/h2-console/**","/expense/api/hello"
+            AUTHENTICATION_URL, "/h2-console/**"
     );
 }

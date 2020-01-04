@@ -50,7 +50,7 @@ class Home extends Component {
     }
 
     getData(ev, year, month) {
-        Axios.get('http://localhost:8080/expense/' + year + '/' + month,{headers:{
+        Axios.get('http://localhost:8080/api/expense/' + year + '/' + month,{headers:{
             'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
         }}).then(function (response) {
             ev.setState({ data: response.data });

@@ -45,7 +45,7 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public static final String API_ROOT_URL = "/api/**";
-    public static final String AUTHENTICATION_URL = "/api/authenticate";
+    public static final String AUTHENTICATION_URL = "/auth/login";
     public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
 
     private @Autowired CorsFilter corsFilter;

@@ -42,7 +42,7 @@ public class UsernamePasswordAuthenticationSuccessHandler implements Authenticat
         //TODO: REFRESH TOKEN IMPLEMENTATION
 
         Map<String,String> tokenMap = new HashMap<>();
-        tokenMap.put("token",accessToken.getToken());
+        tokenMap.put("accessToken",accessToken.getToken());
         log.debug("Sending the JWT token in response");
         httpServletResponse.setStatus(HttpStatus.OK.value());
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);

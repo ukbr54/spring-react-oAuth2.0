@@ -1,6 +1,6 @@
 package com.fancyfrog.security.authentication.usernamePassword;
 
-import com.fancyfrog.security.authentication.common.exception.AuthMethodNotSupportedException;
+import com.fancyfrog.security.common.exception.AuthMethodNotSupportedException;
 import com.fancyfrog.security.authentication.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

@@ -20,7 +20,27 @@ spring:
       refreshTokenExpTime: 1500
       tokenIssuer: fancyfrog.com
       tokenSigningKey: SsvUBb&\\8K$#B_w;cfz-7hS_)w;4He4L2VkjKUSP\"wB!;?2d#5[%=FQFt6T3ujjvTuqX}AK+,G7s.W)n^7(97CMFy\"+XvvrC+;~Q?gmn2=6E#aCB)A,XnTx.`m+GaX2buuSCxA@3Fp['XveB;nxnDwJau`-~.8w8/Agw7s3GGq?q5s\\>9@#\\FQcbn9>bC9D+w#PcF!tEF@r'NBK3gX~DJ.8dD_T\\-fp7X:7aP]B>2hYN\"(\\w8?h2Ye6zkWbNbwS(s-/:J'%XQ`q~D(kZ>.TQ>qw5n`h^QK~Un:E@RxkuP]?mSMYXuu.^:_24F%/a.B=F)y?VUbcPG8t`\\\"jGh;Eb}mK/6P{&7@m:SC;_8\"$Zbx5\\W'/CMKqJ#F5S(z.C`nHHTEGHV]Ur{su2W#<;\\P7aF8?zF?ms^yEGAL-}{r2EwY,%PCVrC;Q)g!p&d2@ZEY@3<P;W)-X*!c5vx{zP2:ur7:X^(`&@y\"ZL4L6)d~Jr8c[+{*X#t#,q9H+T[d@'e&sJ
-
+    oauth2.client:
+     registration:
+      google:
+        client-id: 120993835113-vg96kg9og7er1hctd0inq8kqpa4iv665.apps.googleusercontent.com
+        client-secret: v1KCooHo6HI7BJHGUPGNzFcN
+        redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+        scope:
+          - email
+          - profile
+      facebook:
+        client-id: 1490738631022711
+        client-secret: e20cd2a3ec9fd3f1470d57b0e2ae1f77
+        redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+        scope:
+          - email
+          - public_profile
+     provider:
+       facebook:
+         authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+         tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+         userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC

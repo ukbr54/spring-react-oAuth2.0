@@ -1,15 +1,20 @@
 package com.fancyfrog.config;
 
-import com.fancyfrog.security.authentication.common.RestAuthenticationEntryPoint;
-import com.fancyfrog.security.authentication.common.token.extractor.TokenExtractor;
-import com.fancyfrog.security.authentication.jwt.JwtAuthenticationProvider;
-import com.fancyfrog.security.authentication.jwt.JwtTokenAuthenticationProcessingFilter;
-import com.fancyfrog.security.authentication.jwt.SkipPathRequestMatcher;
+import com.fancyfrog.security.common.RestAuthenticationEntryPoint;
+import com.fancyfrog.security.common.token.extractor.TokenExtractor;
+import com.fancyfrog.security.authentication.usernamePassword.jwt.JwtAuthenticationProvider;
+import com.fancyfrog.security.authentication.usernamePassword.jwt.JwtTokenAuthenticationProcessingFilter;
+import com.fancyfrog.security.authentication.usernamePassword.jwt.SkipPathRequestMatcher;
 import com.fancyfrog.security.authentication.usernamePassword.UsernamePasswordAuthenticationProvider;
 import com.fancyfrog.security.authentication.usernamePassword.UsernamePasswordProcessingFilter;
+import com.fancyfrog.security.oauth2.CustomOAuth2UserService;
+import com.fancyfrog.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.fancyfrog.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.fancyfrog.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -51,12 +56,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private @Autowired CorsFilter corsFilter;
     private @Autowired ObjectMapper objectMapper;
     private @Autowired TokenExtractor tokenExtractor;
-    private @Autowired AuthenticationSuccessHandler successHandler;
-    private @Autowired AuthenticationFailureHandler failureHandler;
+    private @Autowired @Qualifier("UsernamePasswordAuthenticationSuccessHandler") AuthenticationSuccessHandler successHandler;
+    private @Autowired @Qualifier("UsernamePasswordAuthenticationFailureHandler") AuthenticationFailureHandler failureHandler;
     private @Autowired AuthenticationManager authenticationManager;
+    private @Autowired CustomOAuth2UserService customOAuth2UserService;
     private @Autowired RestAuthenticationEntryPoint authenticationEntryPoint;
     private @Autowired JwtAuthenticationProvider jwtAuthenticationProvider;
     private @Autowired UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
+
+    private @Autowired @Qualifier("OAuth2AuthenticationSuccessHandler") OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private @Autowired @Qualifier("OAuth2AuthenticationFailureHandler") OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     protected UsernamePasswordProcessingFilter buildUsernamePasswordProcessingFilter(String loginEntryPoint) throws Exception{
         UsernamePasswordProcessingFilter processingFilter =
@@ -86,6 +95,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
+    /*
+      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
+      the authorization request. But, since our service is stateless, we can't save it in
+      the session. We'll save the request in a Base64 encoded cookie instead.
+    */
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
@@ -97,10 +116,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
           .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+          .csrf().ignoringAntMatchers("/h2-console/**")//don't apply CSRF protection to /h2-console
+          .and()
+             .headers().frameOptions().sameOrigin()//allow use of frame to same origin urls
+          .and()
           .csrf().disable()// We don't need CSRF for JWT based authentication
           .exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint)
           .and()
-             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+             .csrf().disable()
+             .formLogin().disable()
+             .httpBasic().disable()
+          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
              .authorizeRequests()
              .antMatchers(PUBLIC_API_URLS.toArray(new String[PUBLIC_API_URLS.size()])).permitAll()
@@ -109,10 +135,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
              .antMatchers(API_ROOT_URL).authenticated()
           .and()
              .addFilterBefore(buildUsernamePasswordProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class)
-             .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(PUBLIC_API_URLS,API_ROOT_URL),UsernamePasswordAuthenticationFilter.class);
+             .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(PUBLIC_API_URLS,API_ROOT_URL),UsernamePasswordAuthenticationFilter.class)
+          .oauth2Login()
+             .authorizationEndpoint()
+             .baseUri("/oauth2/authorize")
+             .authorizationRequestRepository(this.cookieAuthorizationRequestRepository())
+          .and()
+             .redirectionEndpoint()//after authentication with the external provider.
+             .baseUri("/oauth2/callback/*")
+          .and()
+             .userInfoEndpoint()//Accessing User Information
+             .userService(this.customOAuth2UserService)
+          .and()
+             .successHandler(oAuth2AuthenticationSuccessHandler)
+             .failureHandler(oAuth2AuthenticationFailureHandler);
     }
 
     private List<String> PUBLIC_API_URLS = Arrays.asList(
-            AUTHENTICATION_URL, "/h2-console/**"
+            AUTHENTICATION_URL, "/h2-console/**","/oauth2/**"
     );
 }

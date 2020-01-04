@@ -1,25 +1,6 @@
 package com.fancyfrog.controller;
 
-import com.fancyfrog.exception.BadRequestException;
-import com.fancyfrog.payload.ApiResponse;
-import com.fancyfrog.payload.AuthResponse;
-import com.fancyfrog.payload.LoginRequest;
-import com.fancyfrog.payload.SignUpRequest;
-import com.fancyfrog.persistence.AuthProvider;
-import com.fancyfrog.persistence.model.User;
-import com.fancyfrog.persistence.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
 
 /**
  * Created by Ujjwal Gupta on Dec,2019
